@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>URI vs URL Diagram</title>
+  <style>
+    body { font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial; padding: 24px; }
+    .diagram { max-width: 900px; margin: 0 auto; }
+    svg { width: 100%; height: auto; display: block; }
+    .box { fill: #0b5fff; fill-opacity: 0.06; stroke: #0b5fff; stroke-width: 1.5; rx: 6; ry: 6; }
+    .box-title { font-weight: 700; fill: #07316a; font-size: 14px; }
+    .box-sub { font-size: 12px; fill: #07316a; }
+    .connector { stroke: #6b7280; stroke-width: 1.2; marker-end: url(#arrow); }
+    .note { font-size: 11px; fill: #374151; }
+  </style>
+</head>
+<body>
+  <div class="diagram" role="img" aria-label="Diagram showing URI branching into URL and non-URL URIs, with examples">
+    <svg viewBox="0 0 900 520" xmlns="http://www.w3.org/2000/svg" aria-hidden="false" role="img">
+      <defs>
+        <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+          <path d="M0 0 L8 4 L0 8 z" fill="#6b7280" />
+        </marker>
+      </defs>
+
+      <!-- Top: URI -->
+      <g transform="translate(300,20)">
+        <rect class="box" x="0" y="0" width="300" height="48"></rect>
+        <text class="box-title" x="150" y="28" text-anchor="middle">URI</text>
+        <text class="box-sub" x="150" y="44" text-anchor="middle">Uniform Resource Identifier</text>
+      </g>
+
+      <!-- Level 2: URL and Non-URL URIs -->
+      <g transform="translate(60,120)">
+        <rect class="box" x="0" y="0" width="300" height="56"></rect>
+        <text class="box-title" x="150" y="24" text-anchor="middle">URL</text>
+        <text class="box-sub" x="150" y="44" text-anchor="middle">Locator (how to fetch)</text>
+      </g>
+
+      <g transform="translate(480,120)">
+        <rect class="box" x="0" y="0" width="300" height="56"></rect>
+        <text class="box-title" x="150" y="24" text-anchor="middle">Non-URL URIs</text>
+        <text class="box-sub" x="150" y="44" text-anchor="middle">Names or opaque identifiers</text>
+      </g>
+
+      <!-- Connect URI -> URL and URI -> Non-URL -->
+      <path class="connector" d="M450 68 L210 120" />
+      <path class="connector" d="M450 68 L690 120" />
+
+      <!-- Level 3 under URL: Hierarchical -->
+      <g transform="translate(20,220)">
+        <rect class="box" x="0" y="0" width="260" height="120"></rect>
+        <text class="box-title" x="130" y="22" text-anchor="middle">Hierarchical URLs</text>
+        <text class="note" x="10" y="46">Syntax: <tspan font-family='monospace'>scheme://authority/path?query#fragment</tspan></text>
+        <text class="note" x="10" y="66">Examples:</text>
+        <text class="note" x="18" y="86">• http / https</text>
+        <text class="note" x="18" y="102">• ftp, file, ws/wss, ssh, git</text>
+      </g>
+
+      <!-- Level 3 under Non-URL URIs: URN and Opaque -->
+      <g transform="translate(420,220)">
+        <rect class="box" x="0" y="0" width="360" height="120"></rect>
+        <text class="box-title" x="180" y="22" text-anchor="middle">URN and Opaque Schemes</text>
+        <text class="note" x="10" y="46">Syntax: <tspan font-family='monospace'>scheme:opaque-part</tspan></text>
+        <text class="note" x="10" y="66">Examples:</text>
+        <text class="note" x="18" y="86">• urn:isbn:0451450523 (URN)</text>
+        <text class="note" x="18" y="102">• mailto, tel, data, sip (opaque)</text>
+      </g>
+
+      <!-- Connect URL -> Hierarchical -->
+      <path class="connector" d="M210 176 L150 220" />
+
+      <!-- Connect Non-URL -> URN/Opaque -->
+      <path class="connector" d="M690 176 L540 220" />
+
+      <!-- Optional small legend -->
+      <g transform="translate(20,360)">
+        <rect x="0" y="0" width="860" height="120" rx="6" ry="6" fill="#f8fafc" stroke="#e6eefc" />
+        <text class="note" x="12" y="22">Legend:</text>
+        <text class="note" x="12" y="42">• <tspan font-weight="700">URI</tspan> is the umbrella term. URLs are URIs that provide a location; URNs and other opaque schemes name or embed resources.</text>
+        <text class="note" x="12" y="62">• Hierarchical URIs use <tspan font-family='monospace'>//authority</tspan> and support the full breakdown (authority, path, query, fragment).</text>
+        <text class="note" x="12" y="82">• Opaque URIs use <tspan font-family='monospace'>scheme:opaque-part</tspan> and do not decompose into authority/path/query/fragment.</text>
+      </g>
+    </svg>
+  </div>
+</body>
+</html>
