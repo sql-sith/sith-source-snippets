@@ -16,12 +16,12 @@ URI
 │
 └─ Non-URL URIs
    ├─ URN (name)
-   │  └─ urn:isbn:0451450523    → scheme:opaque-part
+   │  └─ urn:isbn:0451450523         → scheme:opaque-part
    └─ Other opaque schemes
       ├─ mailto:someone@example.com  → scheme:opaque-part
-      ├─ tel:+1-800-555-1234        → scheme:opaque-part
-      ├─ data:text/plain;base64,... → scheme:opaque-part
-      └─ sip:alice@atlanta.com      → scheme:opaque-part
+      ├─ tel:+1-800-555-1234         → scheme:opaque-part
+      ├─ data:text/plain;base64,...  → scheme:opaque-part
+      └─ sip:alice@atlanta.com       → scheme:opaque-part
 ```
 
 ## Quick explanation of the branches
