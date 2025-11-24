@@ -1,12 +1,12 @@
 # Sith Snips
 
-This repository is a collection of code samples for various languages. They may be illustrative, educative, practical, or broken, although the goal is to provide a structured, easy-to-use library of *runnable* code snippets.
+This repository contains code samples for various languages. They may be illustrative, educative, practical, or broken, although the goal is to provide a structured, easy-to-use library of *runnable* code snippets. There is also an `info` folder for helpful technical information that isn't code.
 
-The full repository name is sql-sith/sith-source-snippets.git. The short name, Sith Snips, is different because they both seem really hard to pronounce so I want to use them both.
+The complete repository name is sql-sith/sith-source-snippets.git. The short name, Sith Snips, is different because they both seem really hard to pronounce, so I want to use them both.
 
 ## General Structure
 
-The repository is organized by language at the top level. Each language has its own directory and a specific set of conventions for adding and running snippets.
+The repository is organized by language at the top level. Each language has its own directory and specific conventions for adding and running snippets.
 
 Here is a sample repo layout.
 
@@ -212,3 +212,4 @@ SQL scripts aren't "run" directly but are executed against a database. The key i
 * Organize `.sql` files by function (e.g., `stored_procedures/`, `views/`, `data_manipulation/`).
 * Include a `setup/` directory with scripts to create necessary tables and data for testing the snippets.
 * **Usage** : Each `.sql` file should contain comments explaining its purpose, parameters, and the database context it expects to run in. Users will copy and execute these scripts in a SQL client like SSMS or Azure Data Studio.
+
