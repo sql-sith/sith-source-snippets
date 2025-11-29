@@ -16,16 +16,16 @@
   <tr>
     <th>Scheme</th>
     <th>Type</th>
-    <th>Example</th>
     <th>Syntax</th>
+    <th>Example</th>
     <th>Breakdown</th>
     <th>Notes</th>
   </tr>
   <tr>
     <td>http / https</td>
     <td>URL</td>
-    <td><code>https://example.com/page?x=1#top</code></td>
     <td>scheme://authority/path?query#fragment</td>
+    <td><code>https://example.com/page?x=1#top</code></td>
     <td>
       scheme = https<br>
       authority = example.com<br>
@@ -38,8 +38,8 @@
   <tr>
     <td>ftp</td>
     <td>URL</td>
-    <td>ftp://ftp.gnu.org/gnu/</td>
     <td>scheme://authority/path</td>
+    <td>ftp://ftp.gnu.org/gnu/</td>
     <td>
       scheme = ftp<br>
       authority = ftp.gnu.org<br>
@@ -50,8 +50,8 @@
   <tr>
     <td>file</td>
     <td>URL</td>
-    <td>file:///C:/Users/Chris/document.txt</td>
     <td>scheme://authority/path</td>
+    <td>file:///C:/Users/Chris/document.txt</td>
     <td>
       scheme = file<br>
       authority = (empty)<br>
@@ -62,8 +62,8 @@
   <tr>
     <td>ws / wss</td>
     <td>URL</td>
-    <td>wss://example.com/socket</td>
     <td>scheme://authority/path</td>
+    <td>wss://example.com/socket</td>
     <td>
       scheme = wss<br>
       authority = example.com<br>
@@ -74,8 +74,8 @@
   <tr>
     <td>ssh</td>
     <td>URL</td>
-    <td>ssh://user@host:22/</td>
     <td>scheme://authority/path</td>
+    <td>ssh://user@host:22/</td>
     <td>
       scheme = ssh<br>
       authority = user@host:22<br>
@@ -86,8 +86,8 @@
   <tr>
     <td>git</td>
     <td>URL</td>
-    <td>git://github.com/user/repo.git</td>
     <td>scheme://authority/path</td>
+    <td>git://github.com/user/repo.git</td>
     <td>
       scheme = git<br>
       authority = github.com<br>
@@ -98,8 +98,8 @@
   <tr>
     <td>mailto</td>
     <td>URI (not URL)</td>
-    <td>mailto:someone@example.com</td>
     <td>scheme:opaque-part</td>
+    <td>mailto:someone@example.com</td>
     <td>
       scheme = mailto<br>
       opaque part = someone@example.com
@@ -109,8 +109,8 @@
   <tr>
     <td>tel</td>
     <td>URI (not URL)</td>
-    <td>tel:+1-800-555-1234</td>
     <td>scheme:opaque-part</td>
+    <td>tel:+1-800-555-1234</td>
     <td>
       scheme = tel<br>
       opaque part = +1-800-555-1234
@@ -120,8 +120,8 @@
   <tr>
     <td>urn</td>
     <td>URN</td>
-    <td>urn:isbn:0451450523</td>
     <td>scheme:opaque-part</td>
+    <td>urn:isbn:0451450523</td>
     <td>
       scheme = urn<br>
       opaque part = isbn:0451450523
@@ -131,8 +131,8 @@
   <tr>
     <td>data</td>
     <td>URI</td>
-    <td>data:text/plain;base64,SGVsbG8=</td>
     <td>scheme:opaque-part</td>
+    <td>data:text/plain;base64,SGVsbG8=</td>
     <td>
       scheme = data<br>
       opaque part = text/plain;base64,SGVsbG8=
@@ -142,8 +142,8 @@
   <tr>
     <td>sip</td>
     <td>URI</td>
-    <td>sip:alice@atlanta.com</td>
     <td>scheme:opaque-part</td>
+    <td>sip:alice@atlanta.com</td>
     <td>
       scheme = sip<br>
       opaque part = alice@atlanta.com
