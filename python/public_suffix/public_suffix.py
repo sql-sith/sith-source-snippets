@@ -1,3 +1,4 @@
+
 """
 Domain Name Validation and Public Suffix List (PSL) Analyzer
 
@@ -27,27 +28,21 @@ Examples:
 
 Author: sql-sith
 Repository: sith-source-snippets
-Version: 0.1
 """
 
 # pip install publicsuffix2
-import os
 from publicsuffix2 import PublicSuffixList
 import re
 import argparse
 from typing import Optional
 
-__all__ = ["new_public_suffix_list", "get_domain_name_tld_sld", "is_valid_domain"]
+# Load PSL from the packaged snapshot (or from a file you maintain)
+psl = PublicSuffixList()  # or PublicSuffixList(open('public_suffix_list.dat'))
 
 
-def new_public_suffix_list(psl_file_name: str | None = None) -> PublicSuffixList:
-    if psl_file_name:
-        return PublicSuffixList(open(psl_file_name, encoding="UTF-8"))
-    else:
-        return PublicSuffixList()
-
-
-def get_domain_name_tld_sld(domain_name: str) -> tuple[Optional[str], Optional[str]]:
+def get_domain_name_tld_sld(
+    domain_name: str
+) -> tuple[Optional[str], Optional[str]]:
     """
     Extract Top-Level Domain (TLD) and Second-Level Domain (SLD) from a
     domain name.
@@ -85,8 +80,8 @@ def get_domain_name_tld_sld(domain_name: str) -> tuple[Optional[str], Optional[s
             rules
     """
 
-    tld = psl.get_tld(domain=domain_name, strict=True, wildcard=False)
-    sld = psl.get_sld(domain=domain_name, strict=True, wildcard=False)
+    tld = psl.get_tld(domain=domain_name, wildcard=False)
+    sld = psl.get_sld(domain=domain_name, strict=True)
     return tld, sld
 
 
@@ -136,8 +131,8 @@ def is_valid_domain(domain: str) -> bool:
     """
 
     domain_name_pattern = re.compile(
-        r"^(?=.{1,253}$)(?!-)([A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,63}$"
-    )
+        r'^(?=.{1,253}$)(?!-)([A-Za-z0-9-]{1,63}(?<!-)\.)+[A-Za-z]{2,63}$'
+        )
 
     return bool(domain_name_pattern.match(domain))
 
@@ -166,96 +161,38 @@ def parse_args():
     Raises:
         SystemExit: If interactive input fails or user provides invalid input.
     """
-
-    def existing_file(filepath):
-        if not os.path.exists(filepath):
-            raise argparse.ArgumentTypeError(f"File not found: {filepath}")
-        return filepath
-
-    parser = argparse.ArgumentParser(description="Domain name validator and PSL lookup")
-    parser.add_argument(
-        "--domain",
-        "-d",
-        dest="domain_name",
-        type=str,
-        nargs="?",
-        help="Domain name to validate and analyze",
+    parser = argparse.ArgumentParser(
+        description="Domain name validator and PSL lookup"
     )
     parser.add_argument(
-        "--psl",
-        "--file",
-        dest="psl_file_name",
-        type=existing_file,
-        nargs="?",
-        help="(optional) Name of local public suffix list file",
+        "domain",
+        nargs="?",   # optional
+        help="Domain name to validate and analyze"
     )
-    parser.add_argument(
-        "--verbose",
-        "-v",
-        dest="verbose",
-        help="(optional) Print helpful interpretation of results",
-        action="store_true",
-    )
-
     args = parser.parse_args()
 
-    # parameter set validation:
-    if args.psl_file_name is not None:
-        if args.domain_name is None:
-            parser.error(r"The --psl parameter requires --domain")
-        else:
-            args.psl_file_name = args.psl_file_name.strip()
-
-    # parse domain:
-    if not args.domain_name:
+    if not args.domain:
         try:
-            args.domain_name = get_user_input(prompt="Enter a domain name: ")
-            args.domain_name = args.domain_name.strip()
+            args.domain = get_user_input(prompt="Enter a domain name: ")
         except ValueError as e:
             print(e)
             exit(1)
 
-    if not is_valid_domain(args.domain_name):
-        parser.error(f"Invalid domain name: {args.domain_name}")
-
+    args.domain = args.domain.strip()
     return args
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     args = parse_args()
 
-    if args.psl_file_name is not None:
-        psl_file_name = args.psl_file_name
-        psl = new_public_suffix_list(psl_file_name=psl_file_name)
-    else:
-        psl = new_public_suffix_list()
+    if args.domain:
+        domain_name = args.domain.strip()
 
-    if args.domain_name is not None:
-        domain_name = args.domain_name
+        if not is_valid_domain(domain_name):
+            print(f"Invalid domain name: {domain_name}")
+            exit(1)
 
         tld, sld = get_domain_name_tld_sld(domain_name)
-        print(f"\nPSL has the following info for {domain_name}:")
+        print(f"PSL has the following info for {domain_name}:")
         print(f"    tld: {tld}")
         print(f"    sld: {sld}")
-
-        if args.verbose is True:
-            print("\nSummary:")
-            print("--------")
-
-            if (tld and sld and tld == sld) or (tld and not sld):
-                print(f"{domain_name} appears to be a valid public suffix.")
-            elif tld and sld and tld in sld:
-                print(f"{domain_name} belongs to the public suffix {tld}.")
-                print(f"{sld} is a potential host or registerable subdomain.")
-            elif tld and sld and tld not in sld:
-                print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
-                print(f"Public suffix {tld} and next-level label {sld} both found")
-                print("but appear to be unrelated to each other.")
-            elif not tld and sld:
-                print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
-                print(f"No public suffix found, but {sld} was returned as a")
-                print("potential host or registerable subdomain.")
-            else:  # Both None
-                print(f"Could not parse {domain_name} according to Public Suffix List rules.")
-
-            print("")
