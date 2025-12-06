@@ -30,9 +30,8 @@ Repository: sith-source-snippets
 Version: 0.1
 """
 
-# pip install publicsuffix2
 import os
-from publicsuffix2 import PublicSuffixList
+from publicsuffix2 import PublicSuffixList, fetch as psl_fetch
 import re
 import argparse
 from typing import Optional
@@ -47,7 +46,35 @@ def new_public_suffix_list(psl_file_name: str | None = None) -> PublicSuffixList
         return PublicSuffixList()
 
 
-def get_domain_name_tld_sld(domain_name: str) -> tuple[Optional[str], Optional[str]]:
+def find_nic_url_for_suffix(target_suffix):
+    """Find NIC URL by locating suffix then searching backwards for nearest NIC URL"""
+
+    psl_text = psl_fetch().read()
+    lines = psl_text.splitlines()
+
+    # Find the line number where our suffix appears
+    target_line = -1
+    for i, line in enumerate(lines):
+        if line.strip() == target_suffix:
+            target_line = i
+            break
+
+    if target_line == -1:
+        return None
+
+    # Search backwards from target line to find the NIC URL comment
+    for i in range(target_line, -1, -1):
+        line = lines[i].strip()
+        if line.startswith("//") and "https://" in line:
+            # Extract URL from this line
+            url_match = re.search(r"https://[^\s]+", line)
+            if url_match:
+                return url_match.group()
+
+    return None
+
+
+def get_domain_name_tld_sld(domain_name: str) -> tuple[Optional[str], Optional[str], Optional[str]]:
     """
     Extract Top-Level Domain (TLD) and Second-Level Domain (SLD) from a
     domain name.
@@ -86,8 +113,12 @@ def get_domain_name_tld_sld(domain_name: str) -> tuple[Optional[str], Optional[s
     """
 
     tld = psl.get_tld(domain=domain_name, strict=True, wildcard=False)
+    nic = None
+    if tld:
+        nic = find_nic_url_for_suffix(target_suffix=tld)
+
     sld = psl.get_sld(domain=domain_name, strict=True, wildcard=False)
-    return tld, sld
+    return tld, sld, nic
 
 
 def is_valid_domain(domain: str) -> bool:
@@ -221,6 +252,34 @@ def parse_args():
     return args
 
 
+def print_domain_summary(args, domain_name, tld, sld, nic):
+    if args.verbose is True:
+        print("\nSummary:")
+        print("--------")
+
+        if (tld and sld and tld == sld) or (tld and not sld):
+            print(f"{domain_name} appears to be a valid public suffix.")
+            print(f"The NIC for {tld} is {nic}.")
+        elif tld and sld and tld in sld:
+            print(f"{domain_name} belongs to the public suffix {tld}.")
+            print(f"{sld} is a the shortest potentially registerable portion of {sld}.")
+            print(f"The NIC for {tld} is {nic}.")
+        elif tld and sld and tld not in sld:
+            print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
+            print(f"Public suffix {tld} and next-level label {sld} both found")
+            print("but appear to be unrelated to each other.")
+            print(f"The NIC for {tld} is {nic}.")
+        elif not tld and sld:
+            print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
+            print(
+                f"No public suffix found, but {sld} was returned as a potentially registerable subdomain."
+            )
+        else:  # Both None
+            print(f"Could not parse {domain_name} according to Public Suffix List rules.")
+
+        print("")
+
+
 if __name__ == "__main__":
     args = parse_args()
 
@@ -233,29 +292,11 @@ if __name__ == "__main__":
     if args.domain_name is not None:
         domain_name = args.domain_name
 
-        tld, sld = get_domain_name_tld_sld(domain_name)
+        tld, sld, nic = get_domain_name_tld_sld(domain_name)
         print(f"\nPSL has the following info for {domain_name}:")
         print(f"    tld: {tld}")
         print(f"    sld: {sld}")
+        print(f"    nic: {nic}")
 
-        if args.verbose is True:
-            print("\nSummary:")
-            print("--------")
-
-            if (tld and sld and tld == sld) or (tld and not sld):
-                print(f"{domain_name} appears to be a valid public suffix.")
-            elif tld and sld and tld in sld:
-                print(f"{domain_name} belongs to the public suffix {tld}.")
-                print(f"{sld} is a potential host or registerable subdomain.")
-            elif tld and sld and tld not in sld:
-                print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
-                print(f"Public suffix {tld} and next-level label {sld} both found")
-                print("but appear to be unrelated to each other.")
-            elif not tld and sld:
-                print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
-                print(f"No public suffix found, but {sld} was returned as a")
-                print("potential host or registerable subdomain.")
-            else:  # Both None
-                print(f"Could not parse {domain_name} according to Public Suffix List rules.")
-
-            print("")
+        if args.verbose:
+            print_domain_summary(args, domain_name, tld, sld, nic)
