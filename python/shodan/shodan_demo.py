@@ -1,7 +1,7 @@
 import shodan
 
 API_KEY = "YOUR_API_KEY"
-api = shodan.Shodan('API_KEY')
+api = shodan.Shodan(API_KEY)
 
 # Search for Apache servers
 results = api.search("apache")
@@ -13,3 +13,4 @@ for result in results['matches']:
     print(f"Data: {result['data']}")
 
     print("-" * 40)
+
