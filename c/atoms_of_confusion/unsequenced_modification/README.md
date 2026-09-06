@@ -4,7 +4,7 @@ In programming, an atom of confusion is a small, syntactically correct code snip
 
 ## Example: unsequenced modifications
 
-The source file `unsequenced_modification.c` is an good example of this. A true C expert might note immediately that the code that assigns a value to `y` is undefined. Most programmers, however would hesitate a bit before deciding either that the postfix operator would have a high precedence (happening after resolving `x` but before the addition, yielding  `y = 1 `), a low priority (so it would happen after the addition altogether, yeilding `y=0 `), or a very high priority (so it would happen before any resolution of x, yielding `y=2`).
+The source file `unsequenced_modification.c` is an good example of this. A true C expert might note immediately that the code that assigns a value to `y` is undefined. Most programmers, however would hesitate a bit, thinking through the interaction of the postfix increment operator (`x++`) compared to normal addtion, and propably having to do a bit of extra mental parsing because of the three consecutive `+` signs.
 
 ```c
 #include <stdio.h>
@@ -19,7 +19,7 @@ int main() {
 
 ### Behavior
 
-I mentioned that for this particular example, the code's behavior is actually undefined. If you compile it with different compilers, you may get different behaviors.
+Code doesn't have to have undefined behavior to be an atom of confusion, but as I mentioned earlier, this codethat for this particular example, the code's behavior is actually undefined. If you compile it with different compilers, you may get different behaviors.
 
 #### MSVC behavior
 
