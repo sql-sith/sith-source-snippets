@@ -534,3 +534,4 @@ if __name__ == "__main__":
             domain_name = get_user_input(_DOMAIN_NAME_USER_PROMPT)
         else:
             break
+
