@@ -3,7 +3,8 @@ Domain Name Validation and Public Suffix List (PSL) Analyzer
 
 This script provides domain name validation and analysis using the Public
 Suffix List (PSL). It can validate domain names according to RFC standards
-and extract Top-Level Domain (TLD), Second-Level Domain (SLD), and Network
+and extract Top-Level Domain (TLD) and Second-Level Domain (SLD) information.
+
 Information Center (NIC) information.
 
 Features:
@@ -29,6 +30,7 @@ Options:
 
 Examples:
     python public_suffix.py --domain example.com
+    python public_suffix.py --domain subdomain.example.co.uk
     python public_suffix.py -d example.co.uk --verbose
     python public_suffix.py -d example.com --psl local_psl.dat
     python public_suffix.py                             # Interactive mode
@@ -95,6 +97,7 @@ def new_public_suffix_list(psl_file_name: str | None = None) -> PublicSuffixList
         (https://publicsuffix.org/list/). The remote PSL is typically more
         up-to-date but requires internet connectivity.
     """
+
     if psl_file_name:
         return PublicSuffixList(open(psl_file_name, encoding="UTF-8"))
     else:
@@ -499,7 +502,6 @@ def print_domain_summary(args, domain_name, tld, sld, nic):
             print(f"The NIC for {tld} is {nic}.")
         elif not tld and sld:
             print(f"WARNING: Inconsistent PSL data found for {domain_name}.")
-            print(f"No public suffix found, but {sld} was returned as potentially registerable.")
         else:  # Both None
             print(f"Could not parse {domain_name} according to Public Suffix List rules.")
 
@@ -507,6 +509,7 @@ def print_domain_summary(args, domain_name, tld, sld, nic):
 
 
 if __name__ == "__main__":
+
     interactive_mode = False
     args = parse_args()
 
@@ -531,3 +534,4 @@ if __name__ == "__main__":
             domain_name = get_user_input(_DOMAIN_NAME_USER_PROMPT)
         else:
             break
+
