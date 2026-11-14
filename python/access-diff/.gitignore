@@ -1,0 +1,5 @@
+# Generated from a real collector file; contains real names and SIDs.
+tests/fixtures/
+__pycache__/
+*.access-diff.csv
+*.access-diff.txt
