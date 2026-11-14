@@ -40,7 +40,7 @@
     Return only the root process(es), without their descendants.
 
 .PARAMETER AsTree
-    Return the hierarchy as lines of text drawn with ASCII connectors instead of
+    Return the hierarchy as lines of text drawn with box-drawing characters instead of
     Process objects. Roots that share a parent are grouped under a single line for
     that parent.
 
@@ -67,7 +67,8 @@
     `-- 37512 Dropbox
         `-- 38504 Dropbox
 
-    Shows the same trees as text.
+    Shows the same trees as text. The real output draws the connectors with
+    box-drawing characters; they are shown in ASCII here to keep this file plain ASCII.
 
 .EXAMPLE
     Get-RootParentProcess -ProcessName msedge -RootOnly
@@ -181,12 +182,14 @@ function Get-RootParentProcess {
         function Format-TreeBranch {
             param($Node, [string]$Prefix, [bool]$IsLast, $ChildMap, $Visited)
 
-            $connector = if ($IsLast) { '`-- ' } else { '|-- ' }
+            # Box-drawing characters (U+2514 corner, U+251C tee, U+2500 horizontal,
+            # U+2502 vertical) are written as escapes so this file stays plain ASCII.
+            $connector = if ($IsLast) { "`u{2514}`u{2500}`u{2500} " } else { "`u{251C}`u{2500}`u{2500} " }
             "$Prefix$connector$($Node.Id) $($Node.ProcessName)"
 
             if (-not $Visited.Add($Node.Id)) { return }
             $children = @(if ($ChildMap.ContainsKey($Node.Id)) { $ChildMap[$Node.Id] })
-            $childPrefix = $Prefix + $(if ($IsLast) { '    ' } else { '|   ' })
+            $childPrefix = $Prefix + $(if ($IsLast) { '    ' } else { "`u{2502}   " })
             for ($i = 0; $i -lt $children.Count; $i++) {
                 Format-TreeBranch -Node $children[$i] -Prefix $childPrefix `
                     -IsLast ($i -eq $children.Count - 1) -ChildMap $ChildMap -Visited $Visited
