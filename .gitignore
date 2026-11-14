@@ -3,3 +3,6 @@
 **/__pycache__/
 **/build/
 
+
+# Auto-generated Claude Code session indexes (local resume ids and file:/// paths)
+**/claude-sessions.md
